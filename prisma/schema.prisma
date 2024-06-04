@@ -1,0 +1,37 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Appointment {
+  appointment_id    Int       @id @default(autoincrement())
+  slot_id           Int
+  user_id           Int
+  appointment_date  DateTime  @default(now())
+  notes             String?
+  status            String?   @default("booked")
+
+  // Relationships
+  slot              Slot @relation(fields: [slot_id], references: [slot_id])
+}
+
+model Slot {
+  slot_id      Int       @id @default(autoincrement())
+  doctor_id    Int
+  date         DateTime
+  start_time   DateTime
+  end_time     DateTime
+
+  // Relationships
+  appointments Appointment[]
+}
